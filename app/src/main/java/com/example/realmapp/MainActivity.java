@@ -87,9 +87,9 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
         return true;
     }
 
-    private void createNewContact(String name, String number,int edad, boolean genero){
+    private void createNewContact(String name,int edad, boolean genero){
         realm.beginTransaction();
-        Contact contact = new Contact(1+System.currentTimeMillis(),name,number,edad,genero);
+        Contact contact = new Contact(1+System.currentTimeMillis(),name,edad,genero);
         realm.copyToRealm(contact);
         realm.commitTransaction();
     }
@@ -101,7 +101,6 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
         builder.setView(viewInflate);
 
         final EditText names = viewInflate.findViewById(R.id.name);
-        final EditText numbers = viewInflate.findViewById(R.id.numero);
         final EditText edad = viewInflate.findViewById(R.id.edad);
         final ToggleButton sexo = viewInflate.findViewById(R.id.genero);
 
@@ -110,15 +109,14 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 String nameStr = names.getText().toString().trim();
-                String numberStr = numbers.getText().toString().trim();
                 String edadStr = edad.getText().toString().trim();
                 boolean sexoBoolean = sexo.getText().toString().equals("Hombre");
 
-                if (nameStr.length() >0 && numbers.length() > 0 && edadStr.length() > 0){
+                if (nameStr.length() >0 && edadStr.length() > 0){
                     int edadInt = Integer.parseInt(edad.getText().toString());
-                    createNewContact(nameStr,numberStr,edadInt,sexoBoolean);
-                }else if (nameStr.length() >0 && numbers.length() > 0){
-                    createNewContact(nameStr,numberStr,0,sexoBoolean);
+                    createNewContact(nameStr,edadInt,sexoBoolean);
+                }else if (nameStr.length() >0){
+                    createNewContact(nameStr,0,sexoBoolean);
                 }
                 else Toast.makeText(MainActivity.this, "Los campos están vacios", Toast.LENGTH_SHORT).show();
             }
@@ -141,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
             public void onClick(DialogInterface dialogInterface, int i) {
                 String edadMin =edad1.getText().toString().trim();
                 String edadMax =edad2.getText().toString().trim();
-                if (edadMin.length() >0 && edadMax.length() > 0){
+                if (edadMin.length() > -1 && edadMax.length() > -1){
                     //No contempla los valores que se le añaden.
                     showonly(Integer.parseInt(edadMin),Integer.parseInt(edadMax));
                 }
@@ -165,7 +163,8 @@ public class MainActivity extends AppCompatActivity implements RealmChangeListen
     }
     void showonly(int min, int max){
         results = results.where()
-                .greaterThan("edad", min)
+                .
+                        greaterThan("edad", min)
                 .lessThan("edad",max)
                 .findAll();
         adapter = new Adapter(this,results,R.layout.item_contact);

@@ -59,7 +59,7 @@ public class Adapter extends BaseAdapter {
             viewHolder =(ViewHolder) view.getTag();
         }
 
-        viewHolder.name.setText(list.get(pos).getName());
+        viewHolder.name.setText(list.get(pos).getNameNumber());
         viewHolder.edad.setText(String.valueOf("Edad: "+list.get(pos).getEdad()));
 
         if (list.get(pos).isGenero()){
@@ -115,12 +115,10 @@ public class Adapter extends BaseAdapter {
         builder.setView(viewInflate);
 
         final EditText names = viewInflate.findViewById(R.id.name);
-        final EditText numbers = viewInflate.findViewById(R.id.numero);
         final EditText edad = viewInflate.findViewById(R.id.edad);
         final ToggleButton genero = viewInflate.findViewById(R.id.genero);
 
-        names.setText(contact.getName());
-        numbers.setText(contact.getNumero());
+        names.setText(contact.getNameNumber());
         edad.setText(String.valueOf(contact.getEdad()));
         genero.setChecked(!contact.isGenero());
 
@@ -128,16 +126,14 @@ public class Adapter extends BaseAdapter {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 String nameStr = names.getText().toString().trim();
-                String numberStr = numbers.getText().toString().trim();
                 int edadInt = Integer.parseInt(edad.getText().toString());
                 boolean sexoBoolean = genero.getText().toString().equals("Hombre");
 
-                if (nameStr.length() >0 && numbers.length() > 0) {
+                if (nameStr.length() >0) {
                     //
                     Realm realm = Realm.getDefaultInstance();
                     realm.beginTransaction();
-                    contact.setName(nameStr);
-                    contact.setNumero(numberStr);
+                    contact.setNameNumber(nameStr);
                     contact.setEdad(edadInt);
                     contact.setGenero(sexoBoolean);
                     realm.copyToRealmOrUpdate(contact);

@@ -19,7 +19,8 @@ public class ApplicationRealm extends Application {
         Realm.init(getApplicationContext());
         RealmConfiguration config = new RealmConfiguration
                 .Builder()
-                .deleteRealmIfMigrationNeeded()
+                .schemaVersion(1)
+                .migration(new RealmMigration())
                 .build();
         Realm.setDefaultConfiguration(config);
     }
